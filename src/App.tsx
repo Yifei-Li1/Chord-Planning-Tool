@@ -6,7 +6,7 @@ import type { ChordInfo } from './data/chords';
 import { DndContext, type DragEndEvent } from '@dnd-kit/core';
 import { useChordStore } from './store/useChordStore';
 import Timeline from './components/Timeline';
-
+import TestComponent from './components/testComponent';
 
 function App() {
   const [chord, setChord] = useState<'C' | 'Am'>('C');
@@ -33,7 +33,7 @@ function App() {
       <h1>Chord Color Composer (MVP)</h1>
 
 
-      <div className="flex min-h-screen p-8 gap-8">
+      <div className="flex flex-col min-h-screen p-8 gap-8">
         <DndContext onDragEnd={handleDragEnd}>
           {/* 左侧：和弦库 */}
           <section className="w-1/2">
@@ -52,7 +52,9 @@ function App() {
           </section>
           
         </DndContext>
+        <TestComponent />
       </div>
+      
     </div>
   );
 }

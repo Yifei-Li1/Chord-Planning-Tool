@@ -4,6 +4,8 @@ import { playChord } from '../lib/audio';
 import { v4 as uuid } from 'uuid';
 import type { ChordInfo } from '../data/chords';
 import { playTimeline } from '../lib/playTimeline';
+import { useState } from 'react';
+import * as Tone from 'tone';
 
 
 function Slot({
@@ -17,6 +19,7 @@ function Slot({
 }) {
   const { setSlot } = useChordStore();
   const { bars } = useChordStore.getState();
+
   const { setNodeRef, isOver } = useDroppable({
     id: `${barId}-${idx}`,
     data: { barId, idx },
@@ -35,10 +38,28 @@ function Slot({
 }
 
 export default function Timeline() {
-  const { bars, addBar } = useChordStore();
+  const { bars, addBar, bpm, setBpm } = useChordStore();
+  const [playing, setPlaying] = useState(false);
 
+  const onPulsePressed = () => {
+    if(Tone.Part !== null){
+      Tone.Transport.stop(); // 停止音频
+      Tone.Transport.cancel(); // 停止当前播放
+      
+    }
+    setPlaying(false);
+  }
+  const onPlayPressed = () => {
+    setPlaying(true);
+    playTimeline(bars,bpm);
+  }
   return (
     <div className="space-y-4">
+      <span>bpm: {bpm}</span>
+
+      <label htmlFor="default-range" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Default range</label>
+      <input id="default-range" type="range" min="40" max="240" value={bpm} onChange = {(e)=> setBpm(e.target.valueAsNumber)}className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700" />
+
       <div className="flex flex-row gap-4 overflow-x-auto pb-2">
         {bars.map(bar => (
           <div key={bar.id} className="border border-slate-400 rounded p-1 grid grid-cols-4 gap-1 min-w-max">
@@ -54,7 +75,8 @@ export default function Timeline() {
       >
         + 新增小节
       </button>
-      <button onClick={() => playTimeline(bars)}>▶ Play</button>
+      {playing ? <button onClick={onPulsePressed}>▶ Stop</button> : <button onClick={onPlayPressed}>▶ Play</button>}
+
     </div>
   );
 }

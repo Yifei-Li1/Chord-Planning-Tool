@@ -6,7 +6,7 @@ export default function ChordPalette() {
   const addChord = useChordStore(s => s.addChord);
 
   return (
-    <div className="grid grid-cols-3 gap-4">
+    <div className="grid grid-cols-7 gap-4">
       {CHORD_LIBRARY.map(chord => (
         <button
           key={chord.id}

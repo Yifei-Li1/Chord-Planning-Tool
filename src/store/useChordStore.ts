@@ -11,6 +11,8 @@ interface TimelineState extends ChordState {
     bars: Bar[];
     addBar: () => void;
     setSlot: (barId: string, idx: number, chord: ChordInfo | null) => void;
+    bpm: number; // 每分钟节拍数
+    setBpm: (bpm: number) => void;
 }
 
 export const useChordStore = create<TimelineState>(set => ({
@@ -19,15 +21,15 @@ export const useChordStore = create<TimelineState>(set => ({
     addChord: c => set(s => ({
         selected: s.selected.find(x => x.id === c.id) ? s.selected : [...s.selected, c],
     })),
-    removeChord: id => 
+    removeChord: id =>
         set(s => {
-        console.log('Removing chord with id:', id);
-        const newSelected = s.selected.filter(c => c.id !== id);
-        console.log('New selected array:', newSelected);
-        return {
-            selected: newSelected,
-        };
-    }),
+            console.log('Removing chord with id:', id);
+            const newSelected = s.selected.filter(c => c.id !== id);
+            console.log('New selected array:', newSelected);
+            return {
+                selected: newSelected,
+            };
+        }),
     /* ② 时间轴逻辑 */
     bars: [{ id: 'bar-0', slots: [null, null, null, null] }],
     addBar: () =>
@@ -40,5 +42,7 @@ export const useChordStore = create<TimelineState>(set => ({
                 b.id === barId ? { ...b, slots: b.slots.map((c, i) => (i === idx ? chord : c)) } : b
             ),
         })),
+    bpm: 100, // 默认每分钟节拍数
+    setBpm: (bpm: number) => set({ bpm: bpm })
 
 }));
